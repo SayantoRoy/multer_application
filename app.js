@@ -3,6 +3,9 @@ const multer = require('multer');
 const ejs = require('ejs');
 const path = require('path');
 const { chdir } = require('process');
+const fs = require('fs');
+const directory = './src/public/uploads';
+let dirBuf = Buffer.from(directory);
 
 //Init App
 const app = express();
@@ -35,10 +38,10 @@ function checkFileType(file , cb){
     //Ext
 
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    console.log(extname);
+    
     //Mime Type
     const mimetype = filetypes.test(file.mimetype);
-    console.log(mimetype);
+    
     if(extname && mimetype){
         return cb( null , true);
     }else{
@@ -57,7 +60,18 @@ app.use(express.static('./src/public'));
 
 //Basic Routes
 app.get('/', (req , res ) =>{
-    res.render('index');
+    fs.readdir(dirBuf , (err , files)=>{
+        if(err)
+        {
+            res.render('index' , {
+                msg : 'Error : Files errors'
+            });
+        }
+        else
+        {
+            res.send(files);
+        }
+    })
 });
 
 app.post('/upload' , (req , res)=>{
