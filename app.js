@@ -59,20 +59,27 @@ app.use(express.static('./src/public'));
 
 
 //Basic Routes
-app.get('/', (req , res ) =>{
+app.get('/dashboard', (req , res ) =>{
     fs.readdir(dirBuf , (err , files)=>{
         if(err)
         {
-            res.render('index' , {
+            res.render('dasboard' , {
                 msg : 'Error : Files errors'
             });
         }
         else
         {
-            res.send(files);
+            res.render('dashboard' , {
+                files,
+                path : '/uploads'
+            });
         }
     })
 });
+
+app.get('/upload' , (req , res) =>{
+    res.render('index');
+})
 
 app.post('/upload' , (req , res)=>{
     upload(req , res , (err) => {
