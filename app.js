@@ -5,6 +5,8 @@ const path = require('path');
 const { chdir } = require('process');
 const fs = require('fs');
 const directory = './src/public/uploads';
+const pth = '/uploads';
+
 let dirBuf = Buffer.from(directory);
 
 //Init App
@@ -71,7 +73,7 @@ app.get('/dashboard', (req , res ) =>{
         {
             res.render('dashboard' , {
                 files,
-                path : '/uploads'
+                path : pth
             });
         }
     })
@@ -101,7 +103,7 @@ app.post('/upload' , (req , res)=>{
             {
                 res.render('index' , {
                     msg : 'File Successfully Uploaded',
-                    file : `/uploads/${req.file.filename}`
+                    file : `${pth}/${req.file.filename}`
                 })
             }
         }
@@ -109,6 +111,22 @@ app.post('/upload' , (req , res)=>{
 
 })
 
+app.get('/dashboard/:id' , (req , res )=>{
+    const {id } = req.params;
+    res.render('imageView' , {
+        path : pth,
+        file : id
+    })
+});
+
+app.get('/delete/:id' , (req,res)=>{
+    const {id} = req.params;
+    fs.unlinkSync(`${directory}/${id}`);
+
+    res.render('index' , {
+        msg : 'File SuccessFully deleted'
+    });
+});
 
 
 app.listen(port , ()=>{
