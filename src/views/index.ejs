@@ -13,7 +13,9 @@
     <h1>File Upload</h1>
     <%= typeof msg != 'undefined' ? msg : '' %>
     <form action="/upload" method="POST" enctype="multipart/form-data">
+    
       <div class="file-field input-field">
+        
         <div class="btn grey">
           <span>File</span>
           <input name="myImage" type="file">

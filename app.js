@@ -6,6 +6,8 @@ const { chdir } = require('process');
 const fs = require('fs');
 const directory = './src/public/uploads';
 const pth = '/uploads';
+const bodyParser = require('body-parser');
+
 
 let dirBuf = Buffer.from(directory);
 
@@ -22,6 +24,10 @@ const storeage = multer.diskStorage({
         cb(null , file.fieldname +'-'+ Date.now()+path.extname(file.originalname));
     }
 });
+
+//Body Parser
+app.use(bodyParser({extended:false}));
+
 
 //Initialize Upload Var
 const upload = multer({
@@ -61,8 +67,27 @@ app.use(express.static('./src/public'));
 
 
 //Basic Routes
+app.get('/users' , (req ,res) =>{
+    res.render('users');
+})
+.post('/users' , (req ,res)=>{
+    console.log(req.body);
+    let {user} = req.body;
+    fs.mkdir(`${directory}/${user}`, function(err) {
+        if (err) {
+          console.log("There is an error")
+        } else {
+          console.log("New directory successfully created.")
+        }
+      });
+    res.redirect('/upload');
+})
+
+
+
 app.get('/dashboard', (req , res ) =>{
     fs.readdir(dirBuf , (err , files)=>{
+        var files = files.reverse();
         if(err)
         {
             res.render('dasboard' , {
@@ -111,6 +136,8 @@ app.post('/upload' , (req , res)=>{
 
 })
 
+
+
 app.get('/dashboard/:id' , (req , res )=>{
     const {id } = req.params;
     res.render('imageView' , {
@@ -121,11 +148,12 @@ app.get('/dashboard/:id' , (req , res )=>{
 
 app.get('/delete/:id' , (req,res)=>{
     const {id} = req.params;
+    
     fs.unlinkSync(`${directory}/${id}`);
 
-    res.render('index' , {
-        msg : 'File SuccessFully deleted'
-    });
+    res.redirect('/dashboard');
+
+   
 });
 
 

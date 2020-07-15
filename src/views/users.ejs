@@ -1,0 +1,17 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Users</title>
+</head>
+<body>
+    <form action="/users" method="POST">
+        Add a User <br>
+        <input type="text" name="user">
+        <button type="submit"> Add It </button>
+    </form>
+
+    <h1>Welcome <%= typeof user != 'undefined' ? user : '' %></h1>
+
+</body>
+</html>
